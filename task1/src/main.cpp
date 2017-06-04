@@ -52,32 +52,32 @@ BOOL send_ioctl(HANDLE device, DWORD ioctl_code, DWORD bufSize)
 
 int main(int argc, char *argv[])
 {
-	HANDLE dev = open_device(kDevName);
-	if (dev == INVALID_HANDLE_VALUE) {
+    HANDLE dev = open_device(kDevName);
+    if (dev == INVALID_HANDLE_VALUE) {
         printf("Cannot open the device! Is the HEVD installed?\n");
-		system("pause");
-		return -1;
-	}
-	printf("Device opened!\n");
-	DWORD index = 0;
+        system("pause");
+        return -1;
+    }
+    printf("Device opened!\n");
+    DWORD index = 0;
     print_info();
 
-	while (true) {
-		printf("Choose IOCTL index: ");
-		scanf("%d", &index);
-		DWORD ioctl_code = index_to_ioctl_code(index);
-		if (ioctl_code == -1) {
+    while (true) {
+        printf("Choose IOCTL index: ");
+        scanf("%d", &index);
+        DWORD ioctl_code = index_to_ioctl_code(index);
+        if (ioctl_code == -1) {
             print_info();
             continue;
-		}
+        }
         printf("Supply buffer size (hex): ");
         DWORD bufSize = 0;
         scanf("%X", &bufSize);
         BOOL status = send_ioctl(dev, ioctl_code, bufSize);
         printf("IOCTL returned status: %x\n", status);
         printf("***\n");
-	}
-	close_device(dev);
-	system("pause");
+    }
+    close_device(dev);
+    system("pause");
     return 0;
 }
