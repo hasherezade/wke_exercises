@@ -1,0 +1,60 @@
+#include "util.h"
+#include <stdio.h>
+
+const DWORD ioctl_list[] = {
+	HACKSYS_EVD_IOCTL_STACK_OVERFLOW,
+	HACKSYS_EVD_IOCTL_STACK_OVERFLOW_GS,
+	HACKSYS_EVD_IOCTL_ARBITRARY_OVERWRITE,
+	HACKSYS_EVD_IOCTL_POOL_OVERFLOW,
+	HACKSYS_EVD_IOCTL_ALLOCATE_UAF_OBJECT,
+	HACKSYS_EVD_IOCTL_USE_UAF_OBJECT,
+	HACKSYS_EVD_IOCTL_FREE_UAF_OBJECT,
+	HACKSYS_EVD_IOCTL_ALLOCATE_FAKE_OBJECT,
+	HACKSYS_EVD_IOCTL_TYPE_CONFUSION,
+	HACKSYS_EVD_IOCTL_INTEGER_OVERFLOW,
+	HACKSYS_EVD_IOCTL_NULL_POINTER_DEREFERENCE,
+	HACKSYS_EVD_IOCTL_UNINITIALIZED_STACK_VARIABLE,
+	HACKSYS_EVD_IOCTL_UNINITIALIZED_HEAP_VARIABLE,
+	HACKSYS_EVD_IOCTL_DOUBLE_FETCH
+};
+
+const char* ioctl_info[] = {
+	"HACKSYS_EVD_IOCTL_STACK_OVERFLOW",
+	"HACKSYS_EVD_IOCTL_STACK_OVERFLOW_GS",
+	"HACKSYS_EVD_IOCTL_ARBITRARY_OVERWRITE",
+	"HACKSYS_EVD_IOCTL_POOL_OVERFLOW",
+	"HACKSYS_EVD_IOCTL_ALLOCATE_UAF_OBJECT",
+	"HACKSYS_EVD_IOCTL_USE_UAF_OBJECT",
+	"HACKSYS_EVD_IOCTL_FREE_UAF_OBJECT",
+	"HACKSYS_EVD_IOCTL_ALLOCATE_FAKE_OBJECT",
+	"HACKSYS_EVD_IOCTL_TYPE_CONFUSION",
+	"HACKSYS_EVD_IOCTL_INTEGER_OVERFLOW",
+	"HACKSYS_EVD_IOCTL_NULL_POINTER_DEREFERENCE",
+	"HACKSYS_EVD_IOCTL_UNINITIALIZED_STACK_VARIABLE",
+	"HACKSYS_EVD_IOCTL_UNINITIALIZED_HEAP_VARIABLE",
+	"HACKSYS_EVD_IOCTL_DOUBLE_FETCH"
+};
+
+
+DWORD index_to_ioctl_code(size_t index)
+{
+	size_t ioctl_count = sizeof(ioctl_list) / sizeof(DWORD);
+	if (index >= ioctl_count) {
+		printf("[-] No such index!\n");
+		return -1;
+	}
+	return ioctl_list[index];
+}
+
+void print_info()
+{
+	size_t ioctl_count = sizeof(ioctl_list) / sizeof(DWORD);
+	printf("---------------------\n");
+	printf("Device:\n%s\n\n", kDevName);
+	printf("Available IOCTLs:\n", kDevName);
+	printf("---------------------\n");
+	for (size_t i = 0; i < ioctl_count; i++) {
+		printf("%2d: %#x: %s\n", i, ioctl_list[i], ioctl_info[i]);
+	}
+	printf("---------------------\n");
+}
