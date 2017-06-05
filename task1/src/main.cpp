@@ -40,8 +40,8 @@ BOOL send_ioctl(HANDLE device, DWORD ioctl_code, DWORD bufSize)
         ioctl_code,
         inBuffer,
         bufSize,
-        NULL, //inBuffer -> None
-        0, //inBuffer size -> 0
+        NULL, //outBuffer -> None
+        0, //outBuffer size -> 0
         &size_returned,
         NULL
     );
